@@ -2,6 +2,7 @@ set_plot,'z'
 
 xsize=750
 ysize=300
+timeoffset=0
 device,set_resolution=[xsize,ysize]
 device,set_character_size=[6,9]
 
@@ -65,7 +66,7 @@ xyouts,0.8,0.93,'t='+time_st,/normal,charsize=2
 color_bar, cbrange,0.92,0.1,0.95,0.9, ct=ct,charsize=1,/vertical
 
 ;filepng='tmp.png'
-filepng='png'+'/'+string(time,format='(i3.3)')+'.png'
+filepng='png'+'/'+string(time+timeoffset,format='(i3.3)')+'.png'
 img=tvrd()
 tvlct,red,green,blue,/get
 write_png,filepng,img,red,green,blue
