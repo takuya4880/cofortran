@@ -123,6 +123,9 @@ subroutine readdata(box,t)
     
     box%rovx = box%rovx*box%ro
     box%rovz = box%rovz*box%ro
+    box%e = 0.5*(box%rovx**2 + box%rovy**2 + box%rovz**2)/box%ro &
+            + box%pr/(box%con%gam-1.) &
+            + 0.5*(box%bx**2 + box%by**2 + box%bz**2)
 
 end subroutine
 
