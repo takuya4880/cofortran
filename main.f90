@@ -68,9 +68,10 @@ program main
         t = t + box%con%dt
         ns = ns + 1
         if (box%con%imx*box%con%imz==1) print *,t,box%con%dt 
-        if (t>=tnxt) then
+        if (t>=tnxt .or. ns>=nsout) then
             call outp(box,t)
             tnxt = tnxt + tint
+            ns = 0
         endif
         if (t>tend) exit
         if (box%con%dt<1.e-10) exit
