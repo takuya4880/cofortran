@@ -15,6 +15,7 @@ program main
     double precision :: t, tint, tend, tnxt
     integer :: start(8), time(8), minits, timelimit
     integer :: flag(cox,coz), timeup[cox,coz,*] 
+    integer :: ns, nsout 
     character*10 :: tmp
     integer :: mcont
 
@@ -41,6 +42,8 @@ program main
     box%con%q = 3.
     box%con%gam = 5./3.
 
+    ns = 0
+    nsout = 1e5
     t = 0.
     tint = 1.
     tnxt = tint
@@ -63,6 +66,7 @@ program main
         sync all
         call boundary(box, uboundary)
         t = t + box%con%dt
+        ns = ns + 1
         if (box%con%imx*box%con%imz==1) print *,t,box%con%dt 
         if (t>=tnxt) then
             call outp(box,t)
