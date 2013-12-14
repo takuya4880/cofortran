@@ -48,8 +48,10 @@ subroutine upgradbc(arr, k, ub)   !gradient bc for upper boundary
 
     integer :: i
     
-    !arr(:,iz-marg+1:iz) = arr(:,iz-marg) + ub(k,:)
-    arr(:,iz-marg+i+1:iz) = arr(:,iz-marg)
+    do i=1,marg
+        !arr(:,iz-marg+i) = arr(:,iz-marg) + ub(k,i)
+        arr(:,iz-marg+i) = arr(:,iz-marg)
+    end do
 
 end subroutine
 
