@@ -15,7 +15,6 @@ program main
     double precision :: t, tint, tend, tnxt
     integer :: start(8), time(8), minits, timelimit
     integer :: flag(cox,coz), timeup[cox,coz,*] 
-    integer :: ns, nsout 
     character*10 :: tmp
     integer :: mcont
 
@@ -42,8 +41,6 @@ program main
     box%con%q = 3.
     box%con%gam = 5./3.
 
-    ns = 0
-    nsout = 1e5
     t = 0.
     tint = 1.
     tnxt = tint
@@ -66,15 +63,12 @@ program main
         sync all
         call boundary(box, uboundary)
         t = t + box%con%dt
-        ns = ns + 1
         if (box%con%imx*box%con%imz==1) print *,t,box%con%dt 
-        if (t>=tnxt .or. ns>=nsout) then
+        if (t>=tnxt) then
             call outp(box,t)
             tnxt = tnxt + tint
-            ns = 0
         endif
         if (t>tend) exit
-        if (box%con%dt<1.e-10) exit
 
         call date_and_time(tmp,tmp,tmp,time)
         time = time - start
@@ -86,8 +80,12 @@ program main
                 flag(i,j) = timeup[i,j,1]
             end do
         end do 
-        if (product(flag)==1) exit
-        
+        sync all
+        if (t>tend) exit
+        if (product(flag)==1 .or. box%con%dt<1.e-10) then
+            call outp(box,t)
+            exit
+        end if
     end do
 
 end program main
