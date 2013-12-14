@@ -38,17 +38,18 @@ dmin=dminar(m) & dmax=dmaxar(m)
 dlevel=(dmax-dmin)/nlevels
 levels1=(dmin+dlevel/2.d0)+dlevel*findgen(nlevels-1)
 
-for time=0,n_elements(t)-1 do begin
-
 nlevels2=64
-dmax=max(az[*,*,time]) & dmin=min(az[*,*,time])
+dmax=max(az) & dmin=min(az)
+;dmax=max(az[*,*,time]) & dmin=min(az[*,*,time])
 dlevel=(dmax-dmin)/nlevels2
 levels2=(dmin+dlevel/2.d0)+dlevel*findgen(nlevels2-1)
 
-time_st=strmid(strcompress(string(t[time]),/remove_all),0,4)
-
 xrange=[min(x),max(x)] & yrange=[min(y),max(y)]
 cbrange=[dminar[m],dmaxar[m]]
+
+for time=0,n_elements(t)-1 do begin
+
+time_st=strmid(strcompress(string(t[time]),/remove_all),0,4)
 
 case m of
     0: contour, alog10(ro[*,*,time]),x,y,xrange=xrange,yrange=yrange,xstyle=1,ystyle=1,/fill,levels=levels1

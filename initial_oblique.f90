@@ -110,7 +110,7 @@ subroutine initial(box, uboundary)
     box%by = 0.
     box%bz = spread(b(head:tail)*sin(phi(head:tail)),1,ix)
     box%bx = box%bx + bcor*cos(theta)
-    box%by = box%by + bcor*sin(theta)
+    box%bz = box%bz + bcor*sin(theta)
     box%pr = spread(pre(head:tail),1,ix)  
     box%e = 0.5*(box%rovx**2 + box%rovy**2 + box%rovz**2)/box%ro &
             + box%pr/(box%con%gam-1.) &
