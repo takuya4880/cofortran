@@ -250,10 +250,10 @@ subroutine source(box, s)
             fugou(1:marg-1) = -1.
             fugou(marg) = 0.
         end if 
-        if(box%con%imz==coz) fugou(iz-marg:iz) = 0
+        if(box%con%imz==coz) fugou(iz-marg:iz) = 0.
     else
         if(box%con%imz==1) fugou(1:marg) = -1.
-        if(box%con%imz==coz) fugou(iz-marg+1:iz) = 0
+        if(box%con%imz==coz) fugou(iz-marg+1:iz) = 0.
     end if
 
     !$omp parallel workshare
@@ -264,7 +264,8 @@ subroutine source(box, s)
     s%rovx = box%ro*box%con%gx
     !s%rovy = box%ro*box%con%gy
     s%rovy = box%ro*box%con%gy
-    s%rovz = box%ro*box%con%gz*spread(fugou,1,ix)
+    !s%rovz = box%ro*box%con%gz*spread(fugou,1,ix)
+    forall(i=1:iz) s%rovz(:,i) = box%ro(:,i)*box%con%gz*fugou(i)
     s%e = box%rovx*box%con%gx + box%rovy*box%con%gy + box%rovz*box%con%gz
 
     s%bpot = (box%rovx*box%bz - box%rovz*box%bx)/box%ro
