@@ -12,7 +12,7 @@ subroutine initial(box, uboundary)
     double precision :: gami               !inberse of gamma
     double precision :: wid
     double precision :: amp, tpt, tpho, tcor, x, z, a, ad, lp, phicor
-    double precision :: w, ztr, zfsl, zfsu, zmgc, zinv, betafs, betacor
+    double precision :: w, ztr, zfsl, zfsu, zmgc, zinv, betafs, betacor, bcor, theta
     double precision :: den(iiz), pre(iiz),temp(iiz),phi(iiz)
     double precision :: beta(iiz),beta1i(iiz),beta2i(iiz),b(iiz),ee(iiz) 
     double precision :: zz(iiz)
@@ -23,6 +23,7 @@ subroutine initial(box, uboundary)
     amp = 0.05
     lp = 20. 
     phicor = 4.*atan(1.d0) 
+    theta = 3./4. * 4.*atan(1.)
     tpt = 25.
     tpho = 1.
     tcor = tpho * tpt
@@ -34,6 +35,7 @@ subroutine initial(box, uboundary)
     zinv = 5.
     betafs=4.
     betacor=0.2
+    bcor = 0.07
     a = 2.
     ad = a*(box%con%gam-1.)/box%con%gam
 
@@ -58,8 +60,9 @@ subroutine initial(box, uboundary)
     pre(origin) = gami*temp(origin)
     
     beta1i = 0.25/betafs*(tanh((zz-zfsl)/w) + 1.) * (-tanh((zz-zfsu)/w) + 1.)
-    beta2i = 0.5/betacor*(tanh((zz-zmgc)/w) + 1.)
-    beta = 1./(beta1i+beta2i)
+    !beta2i = 0.5/betacor*(tanh((zz-zmgc)/w) + 1.)
+    !beta = 1./(beta1i+beta2i)
+    beta = 1./beta1i
     do i=origin+1,iiz
         den(i) = den(i-1) * ((1.+1./beta(i-1))*temp(i-1) + 0.5*box%con%gam*box%con%dz*box%con%gz)&
                           / ((1.+1./beta(i))*temp(i) - 0.5*box%con%gam*box%con%dz*box%con%gz)
@@ -106,19 +109,33 @@ subroutine initial(box, uboundary)
     box%bx = spread(b(head:tail)*cos(phi(head:tail)),1,ix)
     box%by = 0.
     box%bz = spread(b(head:tail)*sin(phi(head:tail)),1,ix)
+    box%bx = box%bx + bcor*cos(theta)
+    box%by = box%by + bcor*sin(theta)
     box%pr = spread(pre(head:tail),1,ix)  
     box%e = 0.5*(box%rovx**2 + box%rovy**2 + box%rovz**2)/box%ro &
             + box%pr/(box%con%gam-1.) &
             + 0.5*(box%bx**2 + box%by**2 + box%bz**2)
 
-    box%bpot(:,1:marg)=0.
+    box%bpot(1,1)=0.
     if(box%con%imz==1) then
-        do j=marg+1,iz
+        do i=1,cox
+            if (box%con%imx==i) then
+                if (.not. i==1) box%bpot(1,1) = box[i-1,1,1]%bpot(ix,1)
+                do j=2,ix
+                    box%bpot(j,1) = box%bpot(j-1,1) &
+                                - 0.5*box%con%dx*(box%bz(j,1)+box%bz(j-1,1))
+                end do
+            end if
+            sync images(i)
+        end do
+
+        do j=2,iz
             box%bpot(:,j) = box%bpot(:,j-1) &
                             + 0.5*box%con%dz*(box%bx(:,j)+box%bx(:,j-1))
         end do
     end if
     sync all
+
     do i=2,coz
         if (box%con%imz==i) then
             box%bpot(:,1) = box[box%con%imx,i-1,1]%bpot(:,iz-2*marg+1)
