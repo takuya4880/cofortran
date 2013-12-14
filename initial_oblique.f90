@@ -120,7 +120,7 @@ subroutine initial(box, uboundary)
     if(box%con%imz==1) then
         do i=1,cox
             if (box%con%imx==i) then
-                if (.not. i==1) box%bpot(1,1) = box[i-1,1,1]%bpot(ix,1)
+                if (.not. i==1) box%bpot(1,1) = box[i-1,1,1]%bpot(ix-2*marg+1,1)
                 do j=2,ix
                     box%bpot(j,1) = box%bpot(j-1,1) &
                                 - 0.5*box%con%dx*(box%bz(j,1)+box%bz(j-1,1))
