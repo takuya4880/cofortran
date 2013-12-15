@@ -6,7 +6,7 @@ subroutine boundary(box, uboundary)
     implicit none
     type(cell) :: box[cox,coz,*]
     double precision :: uboundary(9,marg)
-    integer :: imx, imz
+    integer :: imx, imz, i
 
     imx = box%con%imx
     imz = box%con%imz
@@ -37,10 +37,11 @@ subroutine boundary(box, uboundary)
 
     call periodicbc(box,imx,imz)    
 
-    if(imz==1) box%bpot(:,1:marg)=box%bpot(:,marg+1)
-    if(imz==coz) box%bpot(:,iz-marg+1:iz)=box%bpot(:,iz-marg)
-    if(imx==1) box%bpot(1:marg,:)=box%bpot(marg+1,:)
-    if(imx==cox) box%bpot(ix-marg+1:ix,:)=box%bpot(ix-marg,:)
+    sync all
+    if(imz==1) forall(i=1:marg) box%bpot(:,i)=box%bpot(:,marg+1)
+    if(imz==coz) forall(i=1:marg) box%bpot(:,iz+1-i)=box%bpot(:,iz-marg)
+    if(imx==1) forall(i=1:marg) box%bpot(i,:)=box%bpot(marg+1,:)
+    if(imx==cox) forall(i=1:marg) box%bpot(ix+1-i,:)=box%bpot(ix-marg,:)
 
 end subroutine 
 
