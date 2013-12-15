@@ -37,6 +37,11 @@ subroutine boundary(box, uboundary)
 
     call periodicbc(box,imx,imz)    
 
+    if(imz==1) box%bpot(:,1:marg)=box%bpot(:,marg+1)
+    if(imz==coz) box%bpot(:,iz-marg+1:iz)=box%bpot(:,iz-marg)
+    if(imx==1) box%bpot(1:marg,:)=box%bpot(marg+1,:)
+    if(imx==cox) box%bpot(ix-marg+1:ix,:)=box%bpot(ix-marg,:)
+
 end subroutine 
 
 subroutine upgradbc(arr, k, ub)   !gradient bc for upper boundary
