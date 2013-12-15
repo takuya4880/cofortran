@@ -14,13 +14,13 @@ subroutine boundary(box, uboundary)
     if (imz==coz) then
         call upgradbc(box%ro, 1, uboundary)
         call upgradbc(box%rovx, 2, uboundary)
-        call upmrbc(box%rovy, 3, uboundary)
-        call upmrbc2(box%rovz, 4, uboundary)
-        call upmrbc2(box%bx, 5, uboundary)
-        call upmrbc2(box%by, 6, uboundary)
-        call upmrbc(box%bz, 7, uboundary)
-        call upmrbc(box%e, 8, uboundary)
-        call upmrbc(box%pr, 9, uboundary)
+        call upgradbc(box%rovy, 3, uboundary)
+        call upgradbc(box%rovz, 4, uboundary)
+        call upgradbc(box%bx, 5, uboundary)
+        call upgradbc(box%by, 6, uboundary)
+        call upgradbc(box%bz, 7, uboundary)
+        call upgradbc(box%e, 8, uboundary)
+        call upgradbc(box%pr, 9, uboundary)
     end if
 
     if (imz==1) then

@@ -250,10 +250,10 @@ subroutine source(box, s)
             fugou(1:marg-1) = -1.
             fugou(marg) = 0.
         end if 
-        if(box%con%imz==coz) fugou(iz-marg:iz) = 0.
+        if(box%con%imz==coz) fugou(iz-3*marg:iz) = 0.
     else
         if(box%con%imz==1) fugou(1:marg) = -1.
-        if(box%con%imz==coz) fugou(iz-marg+1:iz) = 0.
+        if(box%con%imz==coz) fugou(iz-3*marg+1:iz) = 0.
     end if
 
     !$omp parallel workshare
