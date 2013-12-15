@@ -28,9 +28,9 @@ subroutine boundary(box, uboundary)
         call lowmrbc(box%rovx)
         call lowmrbc(box%rovy)
         call lowmrbc2(box%rovz)
-        call lowmrbc(box%bx)
-        call lowmrbc(box%by)
-        call lowmrbc2(box%bz)
+        call lowmrbc2(box%bx)
+        call lowmrbc2(box%by)
+        call lowmrbc(box%bz)
         call lowmrbc(box%e)
         call lowmrbc(box%pr)
     end if
@@ -56,8 +56,8 @@ subroutine upgradbc(arr, k, ub)   !gradient bc for upper boundary
     
     do i=1,marg
         !arr(:,iz-marg+i) = arr(:,iz-marg) + ub(k,i)
-        !arr(:,iz-marg+i) = arr(:,iz-marg)
-        arr(:,iz-marg+i) = ub(k,i)
+        arr(:,iz-marg+i) = arr(:,iz-marg)
+        !arr(:,iz-marg+i) = ub(k,i)
     end do
 
 end subroutine
