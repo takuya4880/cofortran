@@ -13,12 +13,12 @@ subroutine boundary(box, uboundary)
 
     if (imz==coz) then
         call upgradbc(box%ro, 1, uboundary)
-        call upmrbc(box%rovx, 2, uboundary)
-        call upmrbc(box%rovy, 3, uboundary)
-        call upmrbc2(box%rovz, 4, uboundary)
-        call upmrbc(box%bx, 5, uboundary)
-        call upmrbc(box%by, 6, uboundary)
-        call upmrbc2(box%bz, 7, uboundary)
+        call upmrbc(box%rovx)
+        call upmrbc(box%rovy)
+        call upmrbc2(box%rovz)
+        call upmrbc(box%bx)
+        call upmrbc(box%by)
+        call upmrbc2(box%bz)
         call upgradbc(box%e, 8, uboundary)
         call upgradbc(box%pr, 9, uboundary)
     end if
@@ -55,9 +55,9 @@ subroutine upgradbc(arr, k, ub)   !gradient bc for upper boundary
     integer :: i
     
     do i=1,marg
-        !arr(:,iz-marg+i) = arr(:,iz-marg) + ub(k,i)
+        arr(:,iz-marg+i) = arr(:,iz-marg) + ub(k,i)
         !arr(:,iz-marg+i) = arr(:,iz-marg)
-        arr(:,iz-marg+i) = ub(k,i)
+        !arr(:,iz-marg+i) = ub(k,i)
     end do
 
 end subroutine
