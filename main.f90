@@ -52,7 +52,7 @@ program main
     call outpinit(box)
     if (mcont==1) then
         call readdata(box,t)
-        tnxt = dint(t) + tint
+        tnxt = t - mod(t,tint) + tint
     end if
     call outp(box,t)
     call pressure(box)
@@ -63,9 +63,9 @@ program main
         sync all
         call boundary(box, uboundary)
         t = t + box%con%dt
-        if (box%con%imx*box%con%imz==1) print *,t,box%con%dt 
         if (t>=tnxt) then
             call outp(box,t)
+            if (box%con%imx*box%con%imz==1) print *,t,box%con%dt 
             tnxt = tnxt + tint
         endif
         if (t>tend) exit
@@ -84,6 +84,7 @@ program main
         if (t>tend) exit
         if (product(flag)==1 .or. box%con%dt<1.e-10) then
             call outp(box,t)
+            if (box%con%imx*box%con%imz==1) print *,t,box%con%dt 
             exit
         end if
     end do
